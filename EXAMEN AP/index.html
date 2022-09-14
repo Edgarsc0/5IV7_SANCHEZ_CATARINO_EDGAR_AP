@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+body {
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f2eee3;
+}
+.container {
+  position: relative;
+  width: 1160px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  transform-style: preserve-3d;
+  perspective: 500px;
+  margin: auto;
+}
+.container .box {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  background: #000;
+  transition: 0.5s;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  margin-right: 15px;
+  margin-top: 45px;
+}
+.container:hover .box {
+  transform: rotateY(25deg);
+}
+.container .box:hover ~ .box {
+  transform: rotateY(-25deg);
+}
+.container .box:hover {
+  transform: rotateY(0deg) scale(1.25);
+  z-index: 1;
+  box-shadow: 0 25px 40px rgba(0,0,0,0.5);
+}
+.container .box .imgBx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.container .box .imgBx:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg,#f00,#000);
+  z-index: 1;
+  opacity: 0;
+  transition: 0.5s;
+  mix-blend-mode: multiply;
+}
+.container .box:hover .imgBx:before {
+  opacity: 1;
+}
+.container .box .imgBx img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.container .box .content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  padding: 20px;
+  align-items: flex-end;
+  box-sizing: border-box;
+}
+.container .box .content h2 {
+  color: #fff;
+  transition: 0.5s;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-size: 20px;
+  transform: translateY(200px);
+  transition-delay: 0.3s;
+}
+.container .box:hover .content h2 {
+  transform: translateY(0px);
+}
+.container .box .content p {
+  color: #fff;
+  transition: 0.5s;
+  font-size: 14px;
+  transform: translateY(200px);
+  transition-delay: 0.4s;
+}
+.container .box:hover .content p {
+  transform: translateY(0px);
+}
+    </style>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <h1>Pagina web personal sobre Halo 5: Guardians</h1>
+    <p>Realizó: Sanchez Catrino Edgar</p>
+    <hr>
+    <div class="super">
+        <h3>Consultar Vehiculos</h3>
+        <table>
+            <tr>
+                <td><label>Busca un vehiculo!</label></td>
+                <td><input list="Vehiculos" type="text" id="search"></td>
+                <td><button onclick="getInfoVehicles()">Buscar</button></td>
+                <td><button onclick="limpiar('vehicles')">Limpiar Datos</button></td>
+            </tr>
+        </table>
+        </datalist>
+        <datalist id="Vehiculos">
+            <option value="Scorpion">
+            <option value="Phaeton">
+            <option value="Mantis">
+            <option value="Banshee">
+            <option value="Wraith">
+            <option value="Warthog">
+            <option value="Ghost">
+            <option value="Mongoose">
+            <option value="Wasp">
+            <option value="PHANTOM">
+        </datalist>
+        <div class="mainDiv">
+            <div class="name" id="name"></div>
+            <div class="img" id="img"></div>
+            <div class="desc" id="desc"></div>
+        </div>
+        <h3>Consultas Armas</h3>
+        <table>
+            <tr>
+                <td><label>Busca una arma!</label></td>
+                <td><input list="Armas" type="text" id="search2"></td>
+                <td><button onclick="getInfoWeapons()">Buscar</button></td>
+                <td><button onclick="limpiar('weapons')">Limpiar Datos</button></td>
+            </tr>
+        </table>
+        <div class="mainDiv">
+            <div class="name" id="nameWeapon"></div>
+            <div class="img" id="imgWeapon"></div>
+            <div class="desc" id="descWeapon"></div>
+        </div>
+    </div>
+    <h1>Mapas destacados</h1>
+    <div class="container">
+            <div class="box">
+                <div class="imgBx">
+                
+                </div>
+                <div class="content">
+
+                    
+                </div>
+            </div>
+            <div class="box">
+                <div class="imgBx">
+
+                </div>
+                <div class="content">
+
+
+                </div>
+            </div>
+            <div class="box">
+                <div class="imgBx">
+
+                </div>
+                <div class="content">
+
+
+                </div>
+            </div>
+      </div>
+    <script>
+        const elements=document.getElementsByClassName("imgBx");
+        const contentDivs=document.getElementsByClassName("content");
+        fetch("https://www.haloapi.com/metadata/h5/metadata/maps",
+        {headers:{'Accept-Language':'es','Ocp-Apim-Subscription-Key':'8ccd6901f54740bd8f5004cae33471fc'}})
+        .then((request)=>request.json())
+        .then((data)=>{
+            data.map((index)=>{
+                elements[0].innerHTML=`<img src="${data[1].imageUrl}">`;
+                elements[1].innerHTML=`<img src="${data[3].imageUrl}">`;
+                elements[2].innerHTML=`<img src="${data[20].imageUrl}">`;
+                contentDivs[0].innerHTML=`<p>${data[1].description}</p>`;
+                contentDivs[1].innerHTML=`<p>${data[3].description}</p>`;
+                contentDivs[2].innerHTML=`<p>${data[20].description}</p>`;
+            });
+        });
+        const limpiar=(f)=>{
+            if(f=="weapons"){
+                document.getElementById("nameWeapon").innerHTML="";
+                document.getElementById("imgWeapon").innerHTML="";
+                document.getElementById("descWeapon").innerHTML="";
+                document.getElementById("search2").value="";
+            }else{
+                document.getElementById("name").innerHTML="";
+                document.getElementById("img").innerHTML="";
+                document.getElementById("desc").innerHTML="";
+                document.getElementById("search").value="";
+            }
+        }
+        //Esto es para no andar poniendo manualmente los elementos del datalist de la busqueda de armas :)))))
+        //Son muchos
+        let datalist=document.createElement("DATALIST");
+        datalist.setAttribute("id","Armas");
+        let opt="";
+        let namesWeapons=[]
+        fetch("https://www.haloapi.com/metadata/h5/metadata/weapons",
+        {headers:{'Accept-Language':'es','Ocp-Apim-Subscription-Key':'8ccd6901f54740bd8f5004cae33471fc'}})
+        .then(response=>response.json())
+        .then((data)=>{
+            data.map((index)=>{
+                opt+=`<option value="${index.name}">`;
+                namesWeapons.push(index.name);
+            });
+            datalist.innerHTML=opt;
+        });
+        document.body.appendChild(datalist);
+        const getInfoWeapons=()=>{
+            const search=document.getElementById("search2").value;
+            const divName=document.getElementById("nameWeapon");
+            const divImg=document.getElementById("imgWeapon");
+            const divDesc=document.getElementById("descWeapon");
+            const index=namesWeapons.indexOf(search);
+            fetch("https://www.haloapi.com/metadata/h5/metadata/weapons",
+            {headers:{'Accept-Language':'es','Ocp-Apim-Subscription-Key':'8ccd6901f54740bd8f5004cae33471fc'}})
+            .then(response=>response.json())
+            .then((data)=>{
+                divName.innerHTML=data[index].name;
+                divImg.innerHTML=`<img src="${data[index].largeIconImageUrl}">`;
+                if(data[index].description==null){
+                    divDesc.innerHTML="<h1>SIN DATOS</h1>";
+                }else{
+                    divDesc.innerHTML=data[index].description;
+                }
+            })
+            .catch((error)=>{
+                    Swal.fire({
+                        title:'Error',
+                        text: 'Has introducido una busqueda invalida. Revisa la entrada'
+                    });
+                    console.log(error)
+                    divName.innerHTML="";
+                    divImg.innerHTML="";
+                }
+            );
+        }
+        const getInfoVehicles=()=>{
+            const search=document.getElementById("search").value;
+            const divName=document.getElementById("name");
+            const divImg=document.getElementById("img");
+            const divDesc=document.getElementById("desc");
+            divDesc.innerHTML="<iframe src='https://giphy.com/embed/kUTME7ABmhYg5J3psM' width='480' height='360' frameBorder='0' class='giphy-embed' allowFullScreen></iframe>";
+            const index=getIndice(search);
+            fetch("https://www.haloapi.com/metadata/h5/metadata/vehicles",
+            {headers:{'Accept-Language':'es','Ocp-Apim-Subscription-Key':'8ccd6901f54740bd8f5004cae33471fc'}})
+            .then(response=>response.json())
+            .then((data)=>{
+                divName.innerHTML=data[index].name;
+                //la api no trae informacion sobre el Phaeton
+                if(data[index].description==undefined){
+                    divDesc.innerHTML="Es una clase de buque-arma Forerunner. Se emplea en un papel análogo a un cañonero VTOL humano. Estas naves fueron encontradas por las fuerzas del Consejo de Seguridad de las Naciones Unidas en varios enfrentamientos después de la Campaña de Réquiem."
+                }else{
+                    divDesc.innerHTML=data[index].description;
+                }
+                divImg.innerHTML=`<img src=${data[index].largeIconImageUrl}>` 
+            })
+            .catch((error)=>{
+                    Swal.fire({
+                        title:'Error',
+                        text: 'Has introducido una busqueda invalida. Revisa la entrada'
+                    });
+                    divName.innerHTML="";
+                    divImg.innerHTML="";
+                }
+            );
+        }
+        const getIndice=(vehicle)=>{
+            switch(vehicle){
+                case "Scorpion":
+                    return 0;
+                case "Phaeton":
+                    return 1;
+                case "Mantis":
+                    return 2;
+                case "Banshee":
+                    return 3;
+                case "Wraith":
+                    return 4;
+                case "Warthog":
+                    return 5;
+                case "Ghost":
+                    return 6;
+                case "Mongoose":
+                    return 7;
+                case "Wasp":
+                    return 8;
+                case "PHANTOM":
+                    return 9;
+            }
+        }
+    </script>
+</body>
+</html>
